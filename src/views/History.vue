@@ -1,8 +1,6 @@
-<!-- views/History.vue -->
-
 <template>
   <div class="history">
-    <h2 class="history-header"> ~/URL History/~ </h2>
+    <h2 class="history-header">~/URL History/~</h2>
     <ul class="history-list">
       <li
         v-for="(entry, index) in urlHistory"
@@ -10,11 +8,17 @@
         class="history-item"
       >
         <p>
-          Original URL: <a :href="entry.originalURL" target="_blank" class="original-url">{{ entry.originalURL }}</a><br /> <br />
+          Original URL:
+          <a :href="entry.originalURL" target="_blank" class="original-url">{{
+            entry.originalURL
+          }}</a
+          ><br />
+          <br />
           Shortened URL:
-          <a :href="entry.shortenedURL" target="_blank" class="shortened-url">{{
-            entry.shortenedURL
-          }}</a>
+          <a :href="entry.shortenedURL" target="_blank" class="shortened-url"
+            >{{ entry.shortenedURL }} <br />
+            <p class="date">Shortened on: {{ formatTimestamp(entry.timestamp) }}</p>
+          </a>
         </p>
 
         <button
@@ -36,7 +40,6 @@
     <button class="clear-history-button" @click="clearHistory">
       Clear History
     </button>
-    
   </div>
   <Footer />
 </template>
@@ -45,14 +48,13 @@
 import { ref, watchEffect } from "vue";
 import Footer from "@/views/Footer.vue";
 
-
-
 const copyButtonText = ref("Copy");
 
 const urlHistory = ref(JSON.parse(localStorage.getItem("urlHistory")) || []);
 
-
-
+const formatTimestamp = (timestamp) => {
+  return new Date(timestamp).toLocaleString();
+};
 
 const clearHistory = () => {
   urlHistory.value = [];
@@ -73,7 +75,7 @@ const editLink = (index) => {
     urlHistory.value[index].originalURL = updatedURL;
     localStorage.setItem("urlHistory", JSON.stringify(urlHistory.value));
   }
-}; 
+};
 
 const showSuccessMessage = ref(false);
 
@@ -103,7 +105,7 @@ watchEffect(() => {
 <style scoped>
 .history {
   margin: 0 auto;
-  margin-top: 7%;
+  margin-top: 10%;
   max-width: 600px;
   padding: 20px;
 }
@@ -133,10 +135,10 @@ a {
 a:hover {
   text-decoration: underline;
 }
-
-
-
-
+.date {
+  font-size: 0.8rem;
+  color: #666;
+}
 .original-url {
   color: blue;
   font-weight: bold;
@@ -157,7 +159,8 @@ a:hover {
   margin-right: 10px;
 }
 
-.edit-button, .delete-button {
+.edit-button,
+.delete-button {
   background-color: #ccc;
   color: #000;
   border: none;
@@ -186,5 +189,4 @@ a:hover {
     padding: 10px;
   }
 }
-
 </style>

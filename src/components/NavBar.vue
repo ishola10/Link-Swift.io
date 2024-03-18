@@ -11,7 +11,7 @@
     </div>
     
     <div v-if="user">
-      <div v-if="user">
+      <div v-if="user" class="butns">
         <router-link to="/profile" class="header-links2">
           <div class="profile-pic-container">
             <img
@@ -22,8 +22,9 @@
             />
           </div>
           <span class="user-name">{{ user.displayName }}</span>
-          <button class="aa" @click="signout">Logout</button>
+          
         </router-link>
+        <button class="aa" @click="signout">Logout</button>
       </div>
       <router-link v-else to="/profile" class="header-links2">
         <button class="aa">Profile</button>
@@ -159,6 +160,11 @@ body {
 }
 .header-links2 a {
   text-decoration: none;
+}
+.butns{
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 .user-name {
   font-size: 1rem;

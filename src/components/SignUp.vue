@@ -1,19 +1,29 @@
 <template>
-  <div class="sign-up">
-    <h2>Signup</h2>
-    <form @submit.prevent="signup">
-      <label for="name">Name:</label>
-      <input v-model="name" type="text" required />
-      <label for="email">Email:</label>
-      <input v-model="email" type="email" required />
-      <label for="password">Password:</label>
-      <input v-model="password" type="password" required />
-      <button type="submit" :disabled="loading">
-        {{ loading ? "Signing up..." : "Signup" }}
-      </button>
-    </form>
-    <div>
-      <router-link class="login-link" to="/login">Already have an account? Login</router-link>
+  <div class="temp">
+    <div class="sign-up">
+      <img class="logo" src="@/assets/images/logo.png" alt="" srcset="" />
+      <h2>
+        Welcome to <strong style="color: yellow">LinkSwift.io!!</strong> let's
+        get started
+      </h2>
+      <h3>Sign Up</h3>
+      <form @submit.prevent="signup">
+        <label for="name">Name:</label>
+        <input v-model="name" type="text" required />
+        <label for="email">Email:</label>
+        <input v-model="email" type="email" required />
+        <label for="password">Password:</label>
+        <input v-model="password" type="password" required />
+        <button type="submit" :disabled="loading">
+          {{ loading ? "Signing up..." : "Signup" }}
+        </button>
+      </form>
+      <br />
+      <div>
+        <router-link class="login-link" to="/login"
+          >Already have an account? Login</router-link
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -59,17 +69,40 @@ const signup = async () => {
 </script>
 
 <style>
+.temp {
+  background-image: url("../assets/images/link-swift.io-bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .sign-up {
-  max-width: 300px;
+  width: 300px;
   margin: 0 auto;
-  margin-top: 10%;
+  margin-top: 2%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background-color: white;
+}
+.sign-up .logo {
+  width: 100px;
+  margin: 0 auto;
+  display: block;
 }
 .sign-up h2 {
   margin-bottom: 20px;
   text-align: center;
+  color: blue;
+}
+.sign-up h3 {
+  margin-bottom: 20px;
+  /* text-align: center; */
+  font-family: "Courier New", Courier, monospace;
+  color: yellow;
 }
 .sign-up form {
   display: flex;

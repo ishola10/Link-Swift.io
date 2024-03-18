@@ -55,10 +55,17 @@
       <button @click="customizeAlias" class="customize-button">
         Customize
       </button>
+      <p>
+        Customized URL:
+        <a :href="customizedURL" target="_blank">{{ customizedURL }}</a>
+      </p>
+      <button @click="copyCustomizedURLToClipboard" class="copy-button">
+        Copy
+      </button>
     </div>
 
     <div v-if="displayQR" class="qr-code-section">
-      <qr-code :shortenedURL="shortenedURL" @downloadQRCode="downloadQRCode" />
+      <QRCode :shortenedURL="shortenedURL" @downloadQRCode="downloadQRCode" />
     </div>
   </div>
   <Footer />
@@ -79,6 +86,7 @@ const copyButtonText = ref("Copy");
 const customAlias = ref("");
 const displayQR = ref(false);
 const displayCustomize = ref(false);
+const customizedURL = ref("");
 
 const toggleQRCode = () => {
   displayQR.value = !displayQR.value;
@@ -89,27 +97,14 @@ const toggleCustomize = () => {
 };
 
 const storedUrlHistory = localStorage.getItem("urlHistory");
-const urlHistory = ref(
-  storedUrlHistory ? JSON.parse(storedUrlHistory) : []
-);
+const urlHistory = ref(storedUrlHistory ? JSON.parse(storedUrlHistory) : []);
 
 const shortenURL = async () => {
   try {
-    const response = await axios.post(
-      "https://api-ssl.bitly.com/v4/shorten",
-      {
-        long_url: originalURL.value,
-        domain: "bit.ly",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer dc7e5411295788b69a48ff92395646a83f9fd143`,
-        },
-      }
+    const response = await axios.get(
+      `https://tinyurl.com/api-create.php?url=${originalURL.value}`
     );
-
-    shortenedURL.value = response.data.id;
+    shortenedURL.value = response.data;
   } catch (error) {
     console.error("Error shortening URL:", error);
   }
@@ -118,37 +113,26 @@ const shortenURL = async () => {
   urlHistory.value.unshift({
     originalURL: originalURL.value,
     shortenedURL: shortenedURL.value,
-    timestamp,
+    timestamp: timestamp,
   });
   localStorage.setItem("urlHistory", JSON.stringify(urlHistory.value));
 };
 
 const customizeAlias = async () => {
-  try {
-    if (!shortenedURL.value || !customAlias.value) {
-      console.error(
-        "Cannot customize alias for an empty URL or without a custom alias."
-      );
-      return;
-    }
-
-    const response = await axios.patch(
-      `https://api-ssl.bitly.com/v4/shorten/${shortenedURL.value}`,
-      {
-        custom_alias: customAlias.value,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer dc7e5411295788b69a48ff92395646a83f9fd143`,
-        },
-      }
+  if (!shortenedURL.value || !customAlias.value) {
+    console.error(
+      "Cannot customize alias for an empty URL or without a custom alias."
     );
-
-    shortenedURL.value = response.data.id;
-  } catch (error) {
-    console.error("Error customizing alias:", error);
+    return;
   }
+
+  const customMapping = {
+    [customAlias.value]: shortenedURL.value,
+  };
+
+  localStorage.setItem("customMapping", JSON.stringify(customMapping));
+
+  customizedURL.value = `https://tinyurl.com/${customAlias.value}`;
 };
 
 const copyToClipboard = () => {
@@ -157,6 +141,24 @@ const copyToClipboard = () => {
     .then(() => {
       copyButtonText.value = "Copied!";
 
+      setTimeout(() => {
+        copyButtonText.value = "Copy";
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Copy failed:", error);
+      errorMessage.value = "Copy failed. Please try again.";
+    });
+};
+
+const copyCustomizedURLToClipboard = () => {
+  navigator.clipboard
+    .writeText(customizedURL.value)
+    .then(() => {
+      // Update button text to indicate success
+      copyButtonText.value = "Copied!";
+
+      // Reset button text after a timeout
       setTimeout(() => {
         copyButtonText.value = "Copy";
       }, 2000);
@@ -253,6 +255,8 @@ body {
 
 .url-result {
   margin: 2% 0 4% 25%;
+  margin: 0% auto;
+  margin-left: 17.5%;
   text-align: center;
   display: flex;
   /* flex-direction: column; */
