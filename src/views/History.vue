@@ -1,7 +1,7 @@
 <template>
   <div class="history">
     <h2 class="history-header">~/URL History/~</h2>
-    <ul class="history-list">
+    <ul v-if="urlHistory.length > 0" class="history-list">
       <li
         v-for="(entry, index) in urlHistory"
         :key="index"
@@ -36,6 +36,8 @@
         <button @click="deleteLink(index)" class="delete-button">Delete</button>
       </li>
     </ul>
+
+    <p v-else class="no-link">No URLs shortened yet.</p>
 
     <button class="clear-history-button" @click="clearHistory">
       Clear History
@@ -182,6 +184,13 @@ a:hover {
 .success-message {
   color: green;
   margin-left: 10px;
+}
+
+
+.no-link {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #666;
 }
 
 @media (max-width: 600px) {

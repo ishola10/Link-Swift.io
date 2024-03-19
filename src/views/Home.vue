@@ -133,7 +133,6 @@
 </template>
 
 <script setup lang="ts">
-import SlideShow from "@/components/SlideShow.vue";
 import Faqs from "@/components/Faqs.vue";
 import Footer from "@/views/Footer.vue";
 </script>

@@ -91,6 +91,7 @@ body {
   display: flex;
   padding: 10px;
   margin-bottom: 3%;
+  margin: 0 auto;
   justify-content: center;
   align-items: center;
   gap: 10rem;
@@ -165,6 +166,7 @@ body {
   display: flex;
   gap: 1rem;
   align-items: center;
+  justify-content: center;
 }
 .user-name {
   font-size: 1rem;

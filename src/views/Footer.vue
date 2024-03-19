@@ -63,7 +63,6 @@
   margin: 0 auto;
 }
 
-/* mobile responsive max-width should be 450px */
 @media (max-width: 450px) {
   .footer-content {
     flex-direction: column;
