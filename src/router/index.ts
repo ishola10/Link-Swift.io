@@ -8,6 +8,7 @@ import NotFound from "@/views/NotFound.vue";
 import Login from "@/components/Login.vue";
 import SignUp from "@/components/SignUp.vue";
 import Profile from "@/components/Profile.vue";
+// import Welcome from "@/views/Welcome.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -15,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     redirect: "/signup-page", 
   },
+  // {
+  //   path: "/welcome",
+  //   name: "welcome",
+  //   component: Welcome,
+  // },
   {
     path: "/home", 
     name: "home",

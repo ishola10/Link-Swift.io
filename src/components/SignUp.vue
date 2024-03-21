@@ -13,7 +13,19 @@
         <label for="email">Email:</label>
         <input v-model="email" type="email" required />
         <label for="password">Password:</label>
-        <input v-model="password" type="password" required />
+        <div class="password-container">
+          <input
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            required
+          />
+          <img
+            class="show-password"
+            @click="togglePasswordVisibility"
+            src="@/assets/images/eye.png"
+            alt="Show Password"
+          />
+        </div>
         <button type="submit" :disabled="loading">
           {{ loading ? "Signing up..." : "Signup" }}
         </button>
@@ -40,6 +52,7 @@ const name = ref("");
 const email = ref("");
 const password = ref("");
 const loading = ref(false);
+const showPassword = ref(false);
 
 const signup = async () => {
   loading.value = true;
@@ -65,6 +78,10 @@ const signup = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
 };
 </script>
 
@@ -141,5 +158,25 @@ const signup = async () => {
   text-align: center;
   margin-top: 10px;
   color: blue;
+}
+.password-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 10px;
+}
+.show-password {
+  width: 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 7px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+
 }
 </style>

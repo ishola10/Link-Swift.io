@@ -14,14 +14,22 @@
           <div v-if="editing">
             <label for="newName">New Name:</label>
             <input v-model="newName" type="text" required />
-            <button @click="saveName">Save</button>
+            <label for="dob">Date of Birth:</label>
+            <input v-model="dob" type="date" required />
+            <label for="address">Address:</label>
+            <input v-model="address" type="text" required />
+            <label for="phone">Phone Number:</label>
+            <input v-model="phone" type="tel" required />
+            <button @click="saveProfile">Save</button>
             <button @click="cancelEdit">Cancel</button>
           </div>
           <div v-else>
             <p><strong>Name:</strong> {{ user.displayName }}</p>
-            <button @click="startEdit">Edit Name</button>
+            <p><strong>Date of Birth:</strong> {{ user.dob }}</p>
+            <p><strong>Address:</strong> {{ user.address }}</p>
+            <p><strong>Phone Number:</strong> {{ user.phone }}</p>
+            <button @click="startEdit">Edit Profile</button>
           </div>
-          <p><strong>Email:</strong> {{ user.email }}</p>
           <button @click="signout">Sign out</button>
         </div>
       </div>
@@ -47,14 +55,23 @@ import router from "@/router/index";
 const user = ref(null);
 const editing = ref(false);
 const newName = ref("");
+const dob = ref("");
+const address = ref("");
+const phone = ref("");
 
 onMounted(() => {
   const unsubscribe = auth.onAuthStateChanged((newUser) => {
     user.value = newUser;
+    if (newUser) {
+      newName.value = newUser.displayName || "";
+      dob.value = newUser.dob || "";
+      address.value = newUser.address || "";
+      phone.value = newUser.phone || "";
+    }
   });
 
   return () => {
-    unsubscribe(); 
+    unsubscribe();
   };
 });
 
@@ -70,20 +87,27 @@ const signout = async () => {
 
 const startEdit = () => {
   editing.value = true;
-  newName.value = user.value.displayName;
 };
 
 const cancelEdit = () => {
   editing.value = false;
 };
 
-const saveName = async () => {
+const saveProfile = async () => {
   try {
-    await updateProfile(auth.currentUser, { displayName: newName.value });
+    await updateProfile(auth.currentUser, {
+      displayName: newName.value,
+      dob: dob.value,
+      address: address.value,
+      phone: phone.value,
+    });
     user.value.displayName = newName.value;
+    user.value.dob = dob.value;
+    user.value.address = address.value;
+    user.value.phone = phone.value;
     editing.value = false;
   } catch (error) {
-    console.error("Error saving name:", error.message);
+    console.error("Error saving profile:", error.message);
   }
 };
 
@@ -109,6 +133,7 @@ const uploadProfilePicture = async (event) => {
   }
 };
 </script>
+
 <style>
 .profile {
   max-width: 300px;
@@ -121,22 +146,27 @@ const uploadProfilePicture = async (event) => {
 
 .user-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
 .profile-picture {
   width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  height: 150px;
+  /* border-radius: 50%; */
   overflow: hidden;
   position: relative;
-  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .profile-picture img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 2px solid black;
+  padding: 25px;
+  border-radius: 100%;
+  margin-bottom: 20px;
 }
 
 .default-picture {
@@ -145,20 +175,14 @@ const uploadProfilePicture = async (event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ccc;
-  color: #fff;
-  font-size: 32px;
-}
-
-.default-picture span {
-  font-size: 48px;
 }
 
 .user-details {
-  flex: 1;
+  width: 100%;
 }
 
-.user-details p {
+.user-details input {
+  width: calc(100% - 20px);
   margin-bottom: 10px;
 }
 
@@ -167,22 +191,30 @@ const uploadProfilePicture = async (event) => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: blue;
   color: white;
   cursor: pointer;
   margin-top: 10px;
 }
 
 .user-details button:hover {
-  background-color: #0056b3;
+  background-color: darkblue;
 }
 
-input[type="file"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+.user-details button:disabled {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+
+.user-details p {
+  margin-bottom: 10px;
+}
+
+.user-details strong {
+  font-weight: bold;
+}
+
+.user-details button + button {
+  margin-left: 0;
 }
 </style>

@@ -58,7 +58,7 @@ onMounted(() => {
 });
 
 const updateNavbarVisibility = () => {
-  showNavbar.value = !!user.value && route.name !== "signup" && route.name !== "login";
+  showNavbar.value = !!user.value && route.name !== "signup" && route.name !== "login" && route.name !== "welcome";
 };
 
 router.afterEach(() => {
